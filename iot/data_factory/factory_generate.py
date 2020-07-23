@@ -3,6 +3,7 @@
 # Authored by: Liu tianlong (tlzmkm@gmail.com)
 import datetime
 import unittest
+import settings
 from factory import fuzzy
 from factory.alchemy import SQLAlchemyModelFactory
 
@@ -37,9 +38,7 @@ class TemperatureFactory(SQLAlchemyModelFactory):
 
 if __name__ == '__main__':
     import sqlite3
-
-
-    conn = sqlite3.connect('E:/code/iot_data_generate/test.sqlite')
+    conn = sqlite3.connect(settings.IOT_DB_PATH)
     c = conn.cursor()
     cursor = c.execute("SELECT *  from temperature")
     for row in cursor:
