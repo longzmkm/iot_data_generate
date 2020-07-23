@@ -70,20 +70,18 @@ class MqttRequest(object):
     secret_key: SecretKey
 
     """
+    _client = None
 
     def __init__(self, host, port, device_tag, porject_id, secret_key, **kwargs):
-
-        # Initialize MQTT client.
-        self._client = mqtt.Client()  # create MQTT client
         self.host = host
         self.port = port
         self.device_tag = device_tag
         self.project_id = porject_id
         self.secret_key = secret_key
 
-        self._client.on_connect = self._on_connect
-        self._connected = False
-        self._client.on_publish = self._on_publish
+        # self._client.on_connect = self._on_connect
+        # self._connected = False
+        # self._client.on_publish = self._on_publish
 
     def jm_sha256_single(self, value):
         hs_data = hashlib.sha256()
@@ -111,14 +109,18 @@ class MqttRequest(object):
     def _on_connect(self, client, userdata, flags, rc):
         logging.info("Client on_connect called.")
         logging.info("Connected with result code " + str(rc))
-        self._client.subscribe("compass/event/monitor/e100.zxy.car9")
 
+    def on_init_client_after(self):
+        self._client.on_connect = self._on_connect
+        self._connected = False
+        self._client.on_publish = self._on_publish
 
     def __enter__(self):
         # 这个地方的client id 是什么都可以  我就是随手用 device tag代替的
         self._client = mqtt.Client(client_id=self.device_tag)
         self._client.username_pw_set(str(self.project_id), self.secret_key)
         self._client.connect(self.host, self.port, 120)
+        self.on_init_client_after()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -190,6 +192,7 @@ def test_mqtt():
 
 
 if __name__ == '__main__':
-    # test_mqtt()
+    test_mqtt()
     # test_tcp()
-    pass
+    while True:
+        pass
