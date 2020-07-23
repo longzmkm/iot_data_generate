@@ -47,21 +47,7 @@ class TCPRequest(object):
         return res
 
 
-def on_publish(client, userdata, result):
-    print '>>>>' * 50
-    print("data published \n")
-    pass
-
-
-def on_connect(data, flags, rc):
-    print data, flags, rc
-
-
-def on_disconnect(client, userdata, rc):
-    print("client disconnected ok")
-
-
-class MqttRequest(object):
+class MQTTClient(object):
     """
     host: ndp.nlecloud.com
     prot: 1883
@@ -187,7 +173,7 @@ def test_mqtt():
             "ag_air_temperature": 2
         }
     }
-    with MqttRequest(host=host, port=port, porject_id=porject_id, device_tag=device_tag, secret_key=secret_key) as c:
+    with MQTTClient(host=host, port=port, porject_id=porject_id, device_tag=device_tag, secret_key=secret_key) as c:
         c.publish_data(data=data, qos=1)
 
 
